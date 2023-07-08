@@ -15,9 +15,12 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-    socket.on("message", (message) => {
-        io.emit("createMessage", message);
-    });
+    socket.on("join-room", (roomId, userId, userName) => {
+        socket.join(roomId)
+        socket.on("message", (message) => {
+            io.to(roomId).emit("createMessage", message, userName)
+        });
+    }) 
 });
 
 server.listen(3030);
